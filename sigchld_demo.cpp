@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-void sighandler(int sig_no) {
+void SIGCHLD_handler(int sig_no) {
     int status;
     pid_t pid;
     /**
@@ -35,9 +35,10 @@ void sighandler(int sig_no) {
 }
 
 int main() {
-    if (signal(SIGCHLD, sighandler) == SIG_ERR) {
-        perror("signal SIGSTOP\n");
-    }
+    struct sigaction act, old;
+    act.sa_handler = SIGCHLD_handler;
+    sigaction(SIGCHLD, &act, &old);
+
     int fork_pid;
     for (int i = 0; i < 10; ++i) {
         if ((fork_pid = fork()) == 0) {

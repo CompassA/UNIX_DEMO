@@ -1,0 +1,9 @@
+进入内核态的两种方式    系统调用  时钟中断   schedule()
+
+系统调用 -> mov eax x 系统调用编号-> 软中断指令 int 0x80/sysenter 调用system_call进入内核态 
+-> system_call() 调用sys_read/sys_write等 
+-> sys_read等系统调用会调用schedule()，在资源没准备到位的时候阻塞进程
+-> 资源准备好或进程收到信号 进程会被调度到
+-> 若资源准备好 执行剩余sys_read/sys_write 退出内核态前检测进程是否受到信号
+-> 若资源没准备好，打断系统调用，执行信号函数
+-> 回到用户态
